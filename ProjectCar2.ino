@@ -129,6 +129,7 @@ void translateIR(){       // takes action based on IR code received
 
     case 0xFF42BD:  //Go Back, Left
       Serial.println(" 7 ");  resultsIR=13;
+      Serial.println("Go Back and Left");
       Left();  
       Back();      
       Stop();          
