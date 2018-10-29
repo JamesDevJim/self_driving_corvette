@@ -14,23 +14,23 @@
   int pinServo = A1;
 
 //VARIABLES
-  int motorSpeed1 = 70;  //0-100 ADJUST ACCORDINGLY and add into loop later
-  int motorSpeed1B = 100;
-  int motorInput1; //0-255 Input for forward
-  int motorInput1B; //Input for backing
-  int motorSpeed2 = 100;  //0-100 ADJUST ACCORDINGLY and add into loop later
-  int motorInput2; //0-255
-  int backDelay = 800; 
-  int scanDelay = 1000;
-  int stopDelay = 1000;
-  int forwardDelay = 400;
-  int turnDelay = 200;
+  int motorSpeed1 = 90;  //0-100 Adjust accordingly
+  int motorSpeed1B = 90;  //0-100 Adjust accordingly
+  int motorInput1; //0-255 Calculated input for forward
+  int motorInput1B; //0-255 Calculated input for back
+  int motorSpeed2 = 100;  //0-100 Adjust accordingly
+  int motorInput2; //0-255 Calculated input for turning
+  int backDelay = 1300; 
+  int scanDelay = 300;
+  int stopDelay = 500;
+  int forwardDelay = 600;
+  int turnDelay = 900;
   int resultsIR = 0;
   float pingTime;
   float targetDistance[4];
-  int targetTrip = 10;  //10 inches
+  int targetTrip = 12;  //in inches
   float speedOfSound = 776.5;
-  int pos;
+  int pos = 110;
   int radarPos;
   
 
@@ -57,7 +57,7 @@ void loop(){
   if (irrecv.decode(&results)){ // Have we received an IR signal? 
     //Serial.println(results.value, HEX); // UN Comment to see raw values
     translateIR(); 
-    irrecv.resume(); // receive the next value
+    irrecv.resume(); //receive the next value
   }  
   
   //Motor speed adjustment (add remote speed adjustment later)
@@ -72,7 +72,7 @@ void loop(){
 }//End void loop()
 
 
-void translateIR(){       // takes action based on IR code received
+void translateIR(){ //This code is mostly for testing each function individually and for starting the AutoDrive feature 
   switch(results.value){   
     case 0xFFA25D:  //Stop all motors    
       Serial.println(" STOP ALL "); 
@@ -113,8 +113,8 @@ void translateIR(){       // takes action based on IR code received
 
     case 0xFF30CF:  //Go Forward, Left
       Serial.println(" 1 ");  resultsIR=7; 
-      Forward();
       Left();
+      Forward();
       delay(forwardDelay);
       Stop(); 
     break;
@@ -158,19 +158,21 @@ void AutoDrive(){
     int x;
     for (x=0; x<3; x++){
       radarPos=x+1;
-      pos=map(radarPos, 1, 3, 180, 90); //radar 70deg to 180deg mapped to 1 - 3
+      pos=map(radarPos, 1, 3, 190, 65); //radar 70deg to 180deg mapped to 1 - 3
       radar.write(pos);
-      delay(200); //May need to adjust!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      delay(scanDelay);
       Scan();
       targetDistance[x]=speedOfSound*pingTime*63360/2;  //in Inches
     }
-     
+    radarPos = 2;
+    pos=map(radarPos, 1, 3, 190, 65);
+    radar.write(pos); //For centering sensor
     Serial.println("Target Distance (L,F,R): ");
     int i;
     for (i=0; i<3; i++){  
       Serial.println(targetDistance[i]);
     }
-    delay(100); 
+    delay(scanDelay); 
 
   //START SCAN: TESTS 
     if(targetDistance[1] < targetTrip){
@@ -194,6 +196,8 @@ void AutoDrive(){
     switch(autoValue){
     case 1: //No Obstruction Forward, Forward
       Forward();
+      delay(forwardDelay);
+      Stop();
     break;
     
     case 2: //Obstruction Forward, Left & Back
@@ -225,35 +229,38 @@ void AutoDrive(){
 
 //CONTROL FUNCTIONS
   void Forward(){
-    //digitalWrite(pinMotor1A,HIGH);  //Go Forward
-    //digitalWrite(pinMotor1B,LOW);
-    //analogWrite(pinMotor1,motorInput1);
-    Serial.println("AutoDriveForward");
+    digitalWrite(pinMotor1A,HIGH);  //Go Forward
+    digitalWrite(pinMotor1B,LOW);
+    analogWrite(pinMotor1,motorInput1);
+    Serial.println("Forward");
   }
   
   void Left(){
     digitalWrite(pinMotor2A,LOW); //Left
     digitalWrite(pinMotor2B,HIGH);
-    //analogWrite(pinMotor2,motorInput2);       
+    analogWrite(pinMotor2,motorInput2);  
+    Serial.println("Left");     
   }
   
   void Right(){
     digitalWrite(pinMotor2A,HIGH); //Right
-    digitalWrite(pinMotor2B,LOW);
-    //analogWrite(pinMotor2,motorInput2);         
+    digitalWrite(pinMotor2B,LOW);     
+    analogWrite(pinMotor2,motorInput2);  
+    Serial.println("Right");       
   }
   
   void Back(){
-    //digitalWrite(pinMotor1A,LOW);  //Go Back
-    //digitalWrite(pinMotor1B,HIGH);
-    //analogWrite(pinMotor1,motorInput1B); 
-    Serial.println("AutoDrive Back");
+    digitalWrite(pinMotor1A,LOW);  //Go Back
+    digitalWrite(pinMotor1B,HIGH);
+    analogWrite(pinMotor1,motorInput1B); 
+    Serial.println("Back");
     delay(backDelay);   
   }
   
   void Stop(){
     digitalWrite(pinMotor1,LOW);
     digitalWrite(pinMotor2,LOW);
+    Serial.println("Stop");
     delay(stopDelay);
   }
   
