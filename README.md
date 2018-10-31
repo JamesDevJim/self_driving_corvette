@@ -15,14 +15,14 @@ _Arduino project for a self driving car_
 
 
 ### Components
-Ultrasonic sensor
-SG90 Servo Motor
-Elegoo Uno R3
-L293D
-2 hobby motors (one steering and the other for forward and back motion)
-Prototype Shield
-1 2x AA battery pack
-1 3x AA battery pack
-1 5v USB phone charger
-IR sensor
-IR remote
+* Ultrasonic sensor
+* SG90 Servo Motor
+* Elegoo Uno R3
+* L293D
+* 2 hobby motors (one steering and the other for forward and back motion)
+* Prototype Shield
+* 1 2x AA battery pack
+* 1 3x AA battery pack
+* 1 5v USB phone charger
+* IR sensor
+* IR remote
