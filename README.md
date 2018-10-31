@@ -9,7 +9,7 @@ _Arduino project for a self driving car_
 
 ### Purpose:
 * __The objective was to create a self-driving car with the sensors available in the Elegoo Uno R3 Starter Kit (knock-off Arduino Uno) and a cheap toy car from Marshals__ 
-* Detect an obstacle at least one inch away and change position of tires before moving
+* Detect an obstacle 12 inches away and change position of tires before moving
 * Correct tire position until the car can proceed without an obstacle
 * _the ultimate goal was to learn how to code and have fun!_
 
